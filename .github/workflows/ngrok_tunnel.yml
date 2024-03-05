@@ -9,6 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+                - name: ngrok-tunnel
+  # You may pin to the exact commit or the version.
+  # uses: vmactions/ngrok-tunnel@e28904799027c5dd65566e0179fb8d7097972ea4
+  uses: vmactions/ngrok-tunnel@v0.0.1
+  with:
+    # tcp or http
+    protocol: # optional
+    # port to forward to
+    port: 
+          
     - name: Download Ngrok
       run: |
         wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -O ngrok.zip
@@ -19,3 +29,4 @@ jobs:
 
     - name: Create Tunnel
       run: ./ngrok tcp 3000
+      
