@@ -9,13 +9,14 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Download Ngrok
-        run: Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
-
-      - name: Extract Ngrok
-        run: Expand-Archive ngrok.zip
+        run: |
+          Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+          Expand-Archive ngrok.zip -DestinationPath ngrok_temp
 
       - name: Update Ngrok
-        run: .\ngrok\ngrok.exe update
+        run: |
+          $ngrok_version = Invoke-WebRequest -Uri "https://ngrok.com/download" | Select-String -Pattern 'version: (\d+\.\d+\.\d+)' | ForEach-Object { $_.Matches.Groups[1].Value }
+          Rename-Item -Path "ngrok_temp/ngrok-$ngrok_version/ngrok.exe" -Destination "ngrok/ngrok.exe"
 
       - name: Auth
         run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
